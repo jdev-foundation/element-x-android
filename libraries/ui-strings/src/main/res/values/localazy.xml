@@ -14,6 +14,7 @@
   <string name="a11y_encryption_details">"Encryption details"</string>
   <string name="a11y_expand_message_text_field">"Expand message text field"</string>
   <string name="a11y_hide_password">"Hide password"</string>
+  <string name="a11y_info">"Info"</string>
   <string name="a11y_join_call">"Join call"</string>
   <string name="a11y_jump_to_bottom">"Jump to bottom"</string>
   <string name="a11y_move_the_map_to_my_location">"Move the map to my location"</string>
