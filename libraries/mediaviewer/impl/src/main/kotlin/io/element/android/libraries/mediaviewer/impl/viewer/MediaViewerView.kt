@@ -203,43 +203,37 @@ fun MediaViewerView(
         }
         // Top bar
         AnimatedVisibility(visible = showOverlay, enter = fadeIn(), exit = fadeOut()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding()
-            ) {
-                when (currentData) {
-                    is MediaViewerPageData.MediaViewerData -> {
-                        MediaViewerTopBar(
-                            data = currentData,
-                            canShowInfo = state.canShowInfo,
-                            onBackClick = onBackClick,
-                            onInfoClick = {
-                                state.eventSink(MediaViewerEvents.OpenInfo(currentData))
-                            },
-                            eventSink = state.eventSink
-                        )
-                    }
-                    else -> {
-                        TopAppBar(
-                            title = {
-                                if (currentData is MediaViewerPageData.Loading) {
-                                    Text(
-                                        modifier = Modifier.semantics {
-                                            heading()
-                                        },
-                                        text = stringResource(id = CommonStrings.common_loading_more),
-                                        style = ElementTheme.typography.fontBodyMdMedium,
-                                        color = ElementTheme.colors.textPrimary,
-                                    )
-                                }
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = bgCanvasWithTransparency,
-                            ),
-                            navigationIcon = { BackButton(onClick = onBackClick) },
-                        )
-                    }
+            when (currentData) {
+                is MediaViewerPageData.MediaViewerData -> {
+                    MediaViewerTopBar(
+                        data = currentData,
+                        canShowInfo = state.canShowInfo,
+                        onBackClick = onBackClick,
+                        onInfoClick = {
+                            state.eventSink(MediaViewerEvents.OpenInfo(currentData))
+                        },
+                        eventSink = state.eventSink
+                    )
+                }
+                else -> {
+                    TopAppBar(
+                        title = {
+                            if (currentData is MediaViewerPageData.Loading) {
+                                Text(
+                                    modifier = Modifier.semantics {
+                                        heading()
+                                    },
+                                    text = stringResource(id = CommonStrings.common_loading_more),
+                                    style = ElementTheme.typography.fontBodyMdMedium,
+                                    color = ElementTheme.colors.textPrimary,
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = bgCanvasWithTransparency,
+                        ),
+                        navigationIcon = { BackButton(onClick = onBackClick) },
+                    )
                 }
             }
         }
