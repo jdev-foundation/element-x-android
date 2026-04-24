@@ -120,6 +120,47 @@ fun MediaViewerView(
     Scaffold(
         modifier,
         containerColor = Color.Transparent,
+        topBar = {
+            AnimatedVisibility(
+                visible = showOverlay,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                when (currentData) {
+                    is MediaViewerPageData.MediaViewerData -> {
+                        MediaViewerTopBar(
+                            data = currentData,
+                            canShowInfo = state.canShowInfo,
+                            onBackClick = onBackClick,
+                            onInfoClick = {
+                                state.eventSink(MediaViewerEvents.OpenInfo(currentData))
+                            },
+                            eventSink = state.eventSink
+                        )
+                    }
+                    else -> {
+                        TopAppBar(
+                            title = {
+                                if (currentData is MediaViewerPageData.Loading) {
+                                    Text(
+                                        modifier = Modifier.semantics {
+                                            heading()
+                                        },
+                                        text = stringResource(id = CommonStrings.common_loading_more),
+                                        style = ElementTheme.typography.fontBodyMdMedium,
+                                        color = ElementTheme.colors.textPrimary,
+                                    )
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = bgCanvasWithTransparency,
+                            ),
+                            navigationIcon = { BackButton(onClick = onBackClick) },
+                        )
+                    }
+                }
+            }
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
         val pagerState = rememberPagerState(state.currentIndex, 0f) {
@@ -128,47 +169,6 @@ fun MediaViewerView(
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.currentPage }.collect { page ->
                 state.eventSink(MediaViewerEvents.OnNavigateTo(page))
-            }
-        }
-        // Top bar
-        AnimatedVisibility(
-            modifier = Modifier.zIndex(1f),
-            visible = showOverlay,
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
-            when (currentData) {
-                is MediaViewerPageData.MediaViewerData -> {
-                    MediaViewerTopBar(
-                        data = currentData,
-                        canShowInfo = state.canShowInfo,
-                        onBackClick = onBackClick,
-                        onInfoClick = {
-                            state.eventSink(MediaViewerEvents.OpenInfo(currentData))
-                        },
-                        eventSink = state.eventSink
-                    )
-                }
-                else -> {
-                    TopAppBar(
-                        title = {
-                            if (currentData is MediaViewerPageData.Loading) {
-                                Text(
-                                    modifier = Modifier.semantics {
-                                        heading()
-                                    },
-                                    text = stringResource(id = CommonStrings.common_loading_more),
-                                    style = ElementTheme.typography.fontBodyMdMedium,
-                                    color = ElementTheme.colors.textPrimary,
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = bgCanvasWithTransparency,
-                        ),
-                        navigationIcon = { BackButton(onClick = onBackClick) },
-                    )
-                }
             }
         }
         HorizontalPager(
